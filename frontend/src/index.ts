@@ -6,6 +6,29 @@
 // (flow editor, chat UI, node renderers, stream parsing, data hooks) consumed
 // by the self-host and hosted wrappers. Grows as packages are carved in.
 
+// libs
 export * from "./lib/stream";
 export * from "./lib/welcomeThread";
 export * from "./lib/compactDefaultPrompt";
+export * from "./lib/captcha";
+export * from "./lib/apiFetch";
+export * from "./lib/notice";
+export * from "./lib/activeFlow";
+export * from "./lib/builtinFlows";
+
+// data hooks
+export * from "./hooks/useFlowHistory";
+export * from "./hooks/useFlows";
+export * from "./hooks/useThreads";
+export * from "./hooks/useModels";
+export * from "./hooks/useDocuments";
+export * from "./hooks/useActiveFlow";
+export * from "./hooks/useMarketplace";
+
+// flow editor + shared UI primitives
+export { FlowEditor } from "./components/flow/FlowEditor";
+export { NodesPanel } from "./components/nodes/NodesPanel";
+export { AutoTextarea } from "./components/AutoTextarea";
+export { Tooltip } from "./components/Tooltip";
+export * from "./lib/pillStyle";
+export * from "./lib/share";
