@@ -9,6 +9,12 @@
 /bin/
 *.test
 
+# Frontend (npm package). Listed at root too so `reuse lint` skips them
+# (reuse reads the root .gitignore, not nested ones).
+node_modules
+dist
+*.tsbuildinfo
+
 # Go workspace (local-only; lives in the hosted repo during staging)
 go.work
 go.work.sum
