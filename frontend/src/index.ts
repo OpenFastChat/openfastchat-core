@@ -52,3 +52,12 @@ export { MarketplaceBanner } from "./components/marketplace/MarketplaceBanner";
 export { useIsMobile, useIsNarrow } from "./hooks/useIsMobile";
 export * from "./hooks/usePanelState";
 export * from "./lib/flowComparison";
+
+// app shell: full chat orchestration + wrapper-injectable slots
+export { ChatShell } from "./components/ChatShell";
+export type { ShellUser, ChatShellProps } from "./components/ChatShell";
+export { ShellHeader } from "./components/ShellHeader";
+export { Sidebar } from "./components/Sidebar";
+export { StatusBar } from "./components/StatusBar";
+export { FlowEditorPanel } from "./components/panels/FlowEditorPanel";
+export * from "./components/shellMenu";
