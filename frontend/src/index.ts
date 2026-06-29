@@ -32,3 +32,15 @@ export { AutoTextarea } from "./components/AutoTextarea";
 export { Tooltip } from "./components/Tooltip";
 export * from "./lib/pillStyle";
 export * from "./lib/share";
+
+// chat engine + UI
+export { useChat } from "./hooks/useChat";
+export type { Message, ChatStatus } from "./hooks/useChat";
+export * from "./lib/loginPrompt";
+export * from "./lib/fuzzy";
+export { ChatWindow } from "./components/ChatWindow";
+export { MessageBubble } from "./components/MessageBubble";
+export { ContextBlock } from "./components/ContextBlock";
+export { ThinkingBlock } from "./components/ThinkingBlock";
+export { InputBar } from "./components/InputBar";
+export { NoticeModal } from "./components/NoticeModal";
