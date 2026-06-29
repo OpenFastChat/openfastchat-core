@@ -44,3 +44,11 @@ export { ContextBlock } from "./components/ContextBlock";
 export { ThinkingBlock } from "./components/ThinkingBlock";
 export { InputBar } from "./components/InputBar";
 export { NoticeModal } from "./components/NoticeModal";
+
+// marketplace browse + shell support
+export { MarketplacePanel } from "./components/marketplace/MarketplacePanel";
+export { MarketplaceCard } from "./components/marketplace/MarketplaceCard";
+export { MarketplaceBanner } from "./components/marketplace/MarketplaceBanner";
+export { useIsMobile, useIsNarrow } from "./hooks/useIsMobile";
+export * from "./hooks/usePanelState";
+export * from "./lib/flowComparison";
