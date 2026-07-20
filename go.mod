@@ -6,6 +6,9 @@ module github.com/1-Bart-1/openfastchat-core
 go 1.26.1
 
 require (
+	github.com/TwiN/go-away v1.8.1
+	github.com/go-chi/chi/v5 v5.3.1
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/pressly/goose/v3 v3.27.2
