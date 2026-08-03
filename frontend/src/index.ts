@@ -53,6 +53,9 @@ export { useIsMobile, useIsNarrow } from "./hooks/useIsMobile";
 export * from "./hooks/usePanelState";
 export * from "./lib/flowComparison";
 
+// admin surface (shared by every wrapper; talks to /api/admin/*)
+export { ProvidersSection } from "./components/admin/ProvidersSection";
+
 // app shell: full chat orchestration + wrapper-injectable slots
 export { ChatShell } from "./components/ChatShell";
 export type { ShellUser, ChatShellProps } from "./components/ChatShell";

@@ -83,3 +83,27 @@ func GenerateKey() (string, error) {
 	}
 	return base64.StdEncoding.EncodeToString(key), nil
 }
+
+// LoadOrGenerate builds a SecretBox from base64Key. When the key
+// is empty it generates an ephemeral one and returns it in
+// generated (non-empty) so the caller can warn the operator to
+// persist it — provider keys sealed with an ephemeral key are
+// lost on restart. A malformed or wrong-length key is an error.
+func LoadOrGenerate(base64Key string) (box *SecretBox, generated string, err error) {
+	box, err = New(base64Key)
+	if err == nil {
+		return box, "", nil
+	}
+	if err != ErrNoKey {
+		return nil, "", err
+	}
+	generated, err = GenerateKey()
+	if err != nil {
+		return nil, "", err
+	}
+	box, err = New(generated)
+	if err != nil {
+		return nil, "", err
+	}
+	return box, generated, nil
+}
