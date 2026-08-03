@@ -24,7 +24,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "sync-prompt": "cp ../compact/prompt.md src/lib/compactPrompt.md",
-    "prepack": "pnpm run sync-prompt"
+    "prepack": "npm run sync-prompt"
   },
   "peerDependencies": {
     "react": "^19.0.0",

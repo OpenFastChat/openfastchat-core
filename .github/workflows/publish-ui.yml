@@ -16,22 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
-      - name: Install
-        run: pnpm -C frontend install --frozen-lockfile
-
       # prepack re-syncs compactPrompt.md from the canonical Go source, then
-      # publishes the self-contained package. --no-git-checks: tag builds run
-      # in detached HEAD.
+      # npm packs and publishes the self-contained package.
       - name: Publish
-        run: pnpm -C frontend publish --no-git-checks --access public
+        working-directory: frontend
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
