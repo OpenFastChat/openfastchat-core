@@ -9,12 +9,16 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag to publish, e.g. v0.2.0"
+        description: "Release tag to publish, e.g. ui-v0.3.0"
         required: true
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # @openfastchat/ui versions independently of the Go module; its releases are
+    # tagged ui-vX.Y.Z. Skip Go-module releases (bare vX.Y.Z) that share this
+    # repo's release feed.
+    if: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'ui-') }}
     permissions:
       contents: read
       id-token: write
@@ -33,12 +37,13 @@ jobs:
         run: npm install -g npm@latest
 
       # The git tag is the single source of truth for the version; package.json's
-      # in-repo value is only a dev placeholder.
+      # in-repo value is only a dev placeholder. Strip the ui-v prefix.
       - name: Set version from tag
         working-directory: frontend
         run: |
           tag="${{ github.event.release.tag_name || inputs.tag }}"
-          npm version "${tag#v}" --no-git-tag-version --allow-same-version
+          version="${tag#ui-}"; version="${version#v}"
+          npm version "$version" --no-git-tag-version --allow-same-version
 
       # prepack re-syncs compactPrompt.md from the canonical Go source, then
       # npm packs and publishes the self-contained package. Auth is via the

@@ -7,25 +7,30 @@ set -euo pipefail
 dry_run=false
 assume_yes=false
 sha=""
+target=""
 
 print_usage() {
     echo "Usage:"
-    echo "  ./scripts/release            Cut a GitHub release for HEAD"
-    echo "  ./scripts/release --dry-run  Print version, commit and notes, then exit"
-    echo "  ./scripts/release --yes      Skip the confirmation prompt"
-    echo "  ./scripts/release --sha SHA  Release a specific commit instead of HEAD"
-    echo "  ./scripts/release -h"
+    echo "  ./scripts/release go         Release the Go module (tag vX.Y.Z)"
+    echo "  ./scripts/release ui         Release @openfastchat/ui (tag ui-vX.Y.Z)"
     echo
-    echo "Reads the top versioned section of CHANGELOG.md (backend) and"
-    echo "frontend/CHANGELOG.md (frontend), requires their versions to match, and"
-    echo "creates a published GitHub release at that tag. The release body is the"
-    echo "two changelog sections followed by GitHub's auto-generated list of merged"
-    echo "PRs since the previous release. Publishing the release fires the"
-    echo "publish-ui.yml and release-go.yml workflows. The commit must be pushed."
+    echo "  --dry-run   Print the version, commit and notes, then exit"
+    echo "  --yes       Skip the confirmation prompt"
+    echo "  --sha SHA   Release a specific commit instead of HEAD"
+    echo "  -h"
+    echo
+    echo "The Go module and @openfastchat/ui version independently. Each release"
+    echo "reads the top versioned section of its own changelog (CHANGELOG.md for"
+    echo "go, frontend/CHANGELOG.md for ui) and cuts a GitHub release whose body is"
+    echo "those notes plus GitHub's auto-generated merged-PR list. Publishing the"
+    echo "release fires the matching workflow (release-go.yml or publish-ui.yml),"
+    echo "which is guarded by the tag prefix. The commit must be pushed."
+    echo "See COMPATIBILITY.md for which versions work together."
 }
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        go|ui) target="$1"; shift ;;
         -h|--help) print_usage; exit 0 ;;
         -n|--dry-run) dry_run=true; shift ;;
         -y|--yes) assume_yes=true; shift ;;
@@ -33,6 +38,12 @@ while [[ $# -gt 0 ]]; do
         *) echo "Unknown option: $1" >&2; print_usage >&2; exit 1 ;;
     esac
 done
+
+if [[ -z "$target" ]]; then
+    echo "Pick a target: go or ui." >&2
+    print_usage >&2
+    exit 1
+fi
 
 if [[ $(basename "$(pwd)") == "scripts" ]]; then
     cd ..
@@ -89,31 +100,30 @@ latest_notes() {
     '
 }
 
-backend_version=$(latest_version CHANGELOG.md)
-frontend_version=$(latest_version frontend/CHANGELOG.md)
-
-if [[ -z "$backend_version" ]]; then
-    echo "No versioned section found in CHANGELOG.md" >&2
-    exit 1
-fi
-if [[ "$backend_version" != "$frontend_version" ]]; then
-    echo "Version mismatch: CHANGELOG.md top is $backend_version but" \
-         "frontend/CHANGELOG.md top is $frontend_version." >&2
-    echo "The two artifacts share one version — align both top headers." >&2
-    exit 1
+if [[ "$target" == go ]]; then
+    changelog="CHANGELOG.md"
+    label="openfastchat-core (Go module)"
+    tag_prefix=""
+else
+    changelog="frontend/CHANGELOG.md"
+    label="@openfastchat/ui (npm)"
+    tag_prefix="ui-"
 fi
 
-# Normalise to a leading v so the tag is always vX.Y.Z.
-version="$backend_version"
+version=$(latest_version "$changelog")
+if [[ -z "$version" ]]; then
+    echo "No versioned section found in $changelog" >&2
+    exit 1
+fi
 [[ "$version" == v* ]] || version="v$version"
 
-backend_notes=$(latest_notes CHANGELOG.md)
-frontend_notes=$(latest_notes frontend/CHANGELOG.md)
-
-if [[ -z "$backend_notes" && -z "$frontend_notes" ]]; then
-    echo "No release notes found under the $version sections." >&2
+notes=$(latest_notes "$changelog")
+if [[ -z "$notes" ]]; then
+    echo "No release notes found under the $version section of $changelog." >&2
     exit 1
 fi
+
+tag="${tag_prefix}${version}"
 
 if [[ -z "$sha" ]]; then
     sha=$(git rev-parse HEAD)
@@ -131,21 +141,20 @@ if ! gh api "repos/$repo/commits/$sha" >/dev/null 2>&1; then
     exit 1
 fi
 
-if gh release view "$version" --repo "$repo" >/dev/null 2>&1; then
-    echo "Release $version already exists on $repo." >&2
+if gh release view "$tag" --repo "$repo" >/dev/null 2>&1; then
+    echo "Release $tag already exists on $repo." >&2
     exit 1
 fi
 
-body=$(printf '## Backend (Go module)\n\n%s\n\n## Frontend (@openfastchat/ui)\n\n%s\n' \
-    "$backend_notes" "$frontend_notes")
-
 echo "Repository:   $repo"
+echo "Artifact:     $label"
 echo "Version:      $version"
+echo "Tag:          $tag"
 echo "Commit:       $sha"
 echo
 echo "Release notes:"
 echo "--------------------------------------------------------------------------"
-echo "$body"
+echo "$notes"
 echo "--------------------------------------------------------------------------"
 echo "(GitHub appends the merged-PR list since the previous release below this.)"
 
@@ -165,13 +174,17 @@ if [[ "$assume_yes" != true ]]; then
 fi
 
 url=$(gh api "repos/$repo/releases" \
-    -f tag_name="$version" \
+    -f tag_name="$tag" \
     -f target_commitish="$sha" \
-    -f name="$version" \
-    -f body="$body" \
+    -f name="$tag" \
+    -f body="$notes" \
     -F generate_release_notes=true \
     -q .html_url)
 
 echo
 echo "Published: $url"
-echo "publish-ui.yml and release-go.yml will run for $version."
+if [[ "$target" == go ]]; then
+    echo "release-go.yml will verify $tag."
+else
+    echo "publish-ui.yml will publish @openfastchat/ui $version."
+fi

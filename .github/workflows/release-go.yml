@@ -19,6 +19,9 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    # The Go module is tagged vX.Y.Z. Skip @openfastchat/ui releases (ui-vX.Y.Z)
+    # that share this repo's release feed.
+    if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.release.tag_name, 'ui-') }}
     steps:
       - uses: actions/checkout@v4
         with:

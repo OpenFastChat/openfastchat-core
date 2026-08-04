@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 All notable changes to the `@openfastchat/ui` npm package.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-This package and the Go module share one version: a single `vX.Y.Z` release tag
-publishes both, so keep the top headers here and in the root `CHANGELOG.md` in
-lockstep.
+This package versions independently of the `openfastchat-core` Go module: UI
+releases are tagged `ui-vX.Y.Z` (`./scripts/release ui`), Go releases `vX.Y.Z`.
+See [`../COMPATIBILITY.md`](../COMPATIBILITY.md) for which versions work together.
 
 ## [Unreleased]
 

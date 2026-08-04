@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 All notable changes to the `github.com/openfastchat/openfastchat-core` Go module.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-This module and the `@openfastchat/ui` frontend share one version: a single
-`vX.Y.Z` release tag publishes both, so keep the top headers here and in
-`frontend/CHANGELOG.md` in lockstep.
+This module versions independently of the `@openfastchat/ui` frontend package:
+Go releases are tagged `vX.Y.Z` (`./scripts/release go`), UI releases `ui-vX.Y.Z`.
+See [`COMPATIBILITY.md`](COMPATIBILITY.md) for which versions work together.
 
 ## [Unreleased]
 
