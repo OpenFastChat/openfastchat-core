@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/1-Bart-1/openfastchat-core/llmclient"
+	"github.com/openfastchat/openfastchat-core/llmclient"
 )
 
 // toolExec runs a tool the model requested and returns the

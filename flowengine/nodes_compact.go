@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/1-Bart-1/openfastchat-core/compact"
-	"github.com/1-Bart-1/openfastchat-core/coreconfig"
+	"github.com/openfastchat/openfastchat-core/compact"
+	"github.com/openfastchat/openfastchat-core/coreconfig"
 )
 
 func executeCompact(

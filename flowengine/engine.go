@@ -13,7 +13,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/1-Bart-1/openfastchat-core/llmclient"
+	"github.com/openfastchat/openfastchat-core/llmclient"
 )
 
 // LLMClient is the interface flow nodes use for all LLM

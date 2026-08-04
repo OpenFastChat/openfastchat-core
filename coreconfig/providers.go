@@ -12,7 +12,7 @@ package coreconfig
 import (
 	"sync"
 
-	"github.com/1-Bart-1/openfastchat-core/llmclient"
+	"github.com/openfastchat/openfastchat-core/llmclient"
 )
 
 // ProviderConfig describes one OpenAI-compatible backend.

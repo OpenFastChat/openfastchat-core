@@ -13,7 +13,7 @@ requires you to offer your users the corresponding source.
 
 OpenFastChat follows an open-core model. Two wrappers build on this core:
 
-- **[`openfastchat`](https://github.com/1-Bart-1/openfastchat)** — the AGPL
+- **[`openfastchat`](https://github.com/openfastchat/openfastchat)** — the AGPL
   self-host / bring-your-own-key app.
 - **`openfastchat-hosted`** — a proprietary managed SaaS (billing + abuse layer).
 

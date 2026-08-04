@@ -13,6 +13,12 @@ lockstep.
 
 ## [Unreleased]
 
+## [v0.2.0] - 2026-08-04
+
+### Changed
+- Repository moved into the `OpenFastChat` GitHub org; `repository.url` updated.
+  The published package name (`@openfastchat/ui`) is unchanged.
+
 ## [v0.1.0] - 2026-08-04
 
 ### Added

@@ -11,8 +11,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/1-Bart-1/openfastchat-core/coreconfig"
-	"github.com/1-Bart-1/openfastchat-core/llmclient"
+	"github.com/openfastchat/openfastchat-core/coreconfig"
+	"github.com/openfastchat/openfastchat-core/llmclient"
 )
 
 // maxToolRounds caps how many times the model may request

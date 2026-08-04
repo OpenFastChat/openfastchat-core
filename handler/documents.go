@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	store "github.com/1-Bart-1/openfastchat-core/store"
+	store "github.com/openfastchat/openfastchat-core/store"
 )
 
 type DocumentsHandler struct {

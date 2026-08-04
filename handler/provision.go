@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/1-Bart-1/openfastchat-core/middleware"
-	store "github.com/1-Bart-1/openfastchat-core/store"
-	"github.com/1-Bart-1/openfastchat-core/usernames"
+	"github.com/openfastchat/openfastchat-core/middleware"
+	store "github.com/openfastchat/openfastchat-core/store"
+	"github.com/openfastchat/openfastchat-core/usernames"
 
 	"github.com/google/uuid"
 )

@@ -43,4 +43,4 @@ jobs:
           dir="$(mktemp -d)"
           cd "$dir"
           go mod init warm
-          go get "github.com/1-Bart-1/openfastchat-core@${tag}" || true
+          go get "github.com/openfastchat/openfastchat-core@${tag}" || true

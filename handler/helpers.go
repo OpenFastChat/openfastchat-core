@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/1-Bart-1/openfastchat-core/middleware"
-	"github.com/1-Bart-1/openfastchat-core/store"
+	"github.com/openfastchat/openfastchat-core/middleware"
+	"github.com/openfastchat/openfastchat-core/store"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"

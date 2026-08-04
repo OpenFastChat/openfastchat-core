@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/1-Bart-1/openfastchat-core/coreconfig"
+	"github.com/openfastchat/openfastchat-core/coreconfig"
 )
 
 type modelInfo struct {

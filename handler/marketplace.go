@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	store "github.com/1-Bart-1/openfastchat-core/store"
+	store "github.com/openfastchat/openfastchat-core/store"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"

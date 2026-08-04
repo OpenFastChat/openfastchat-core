@@ -10,10 +10,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/1-Bart-1/openfastchat-core/compact"
-	"github.com/1-Bart-1/openfastchat-core/flowengine"
-	"github.com/1-Bart-1/openfastchat-core/middleware"
-	"github.com/1-Bart-1/openfastchat-core/store"
+	"github.com/openfastchat/openfastchat-core/compact"
+	"github.com/openfastchat/openfastchat-core/flowengine"
+	"github.com/openfastchat/openfastchat-core/middleware"
+	"github.com/openfastchat/openfastchat-core/store"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"

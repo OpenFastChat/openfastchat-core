@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/1-Bart-1/openfastchat-core/flowengine"
-	"github.com/1-Bart-1/openfastchat-core/middleware"
-	"github.com/1-Bart-1/openfastchat-core/moderation"
-	"github.com/1-Bart-1/openfastchat-core/store"
+	"github.com/openfastchat/openfastchat-core/flowengine"
+	"github.com/openfastchat/openfastchat-core/middleware"
+	"github.com/openfastchat/openfastchat-core/moderation"
+	"github.com/openfastchat/openfastchat-core/store"
 
 	"github.com/google/uuid"
 )

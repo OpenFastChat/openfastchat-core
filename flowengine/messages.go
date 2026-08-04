@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/1-Bart-1/openfastchat-core/coreconfig"
+	"github.com/openfastchat/openfastchat-core/coreconfig"
 )
 
 // mergeInputs walks live ancestors of targetID transitively

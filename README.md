@@ -6,14 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 # openfastchat-core
 
 The open engine **and shared frontend** behind
-[OpenFastChat](https://github.com/1-Bart-1/openfastchat), licensed
+[OpenFastChat](https://github.com/openfastchat/openfastchat), licensed
 **AGPL-3.0-only**.
 
 It carries no database, billing, or auth-secret concerns — those live in each
 wrapper. Both wrappers (the self-host app and the proprietary hosted SaaS) build
 on this core; they are siblings over core, not layered on each other.
 
-## Backend — Go module `github.com/1-Bart-1/openfastchat-core`
+## Backend — Go module `github.com/openfastchat/openfastchat-core`
 
 - `flowengine/` — the flow DAG executor, validation, and stream events
 - `llmclient/` — multi-provider OpenAI-compatible chat client with tool calls

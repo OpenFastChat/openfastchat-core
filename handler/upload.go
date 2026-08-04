@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/1-Bart-1/openfastchat-core/coreconfig"
-	store "github.com/1-Bart-1/openfastchat-core/store"
+	"github.com/openfastchat/openfastchat-core/coreconfig"
+	store "github.com/openfastchat/openfastchat-core/store"
 
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/ledongthuc/pdf"

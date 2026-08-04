@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/1-Bart-1/openfastchat-core/flowengine"
+	"github.com/openfastchat/openfastchat-core/flowengine"
 
 	"github.com/google/uuid"
 )

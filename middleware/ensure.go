@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/1-Bart-1/openfastchat-core/store"
+	"github.com/openfastchat/openfastchat-core/store"
 
 	"github.com/google/uuid"
 )

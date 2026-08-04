@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 Shared engine + UI (AGPL) that both wrappers build on. Part of the OpenFastChat
 workspace — see `../AGENTS.md` for the layout.
 
-- Go module `github.com/1-Bart-1/openfastchat-core`: flowengine, llmclient,
+- Go module `github.com/openfastchat/openfastchat-core`: flowengine, llmclient,
   compact, brave, crypto, coreconfig, handler, middleware, store.
 - React UI `@openfastchat/ui` in `frontend/` (source-distributed, consumed via a
   pnpm `link:` by the wrappers).
