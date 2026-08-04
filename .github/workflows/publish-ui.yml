@@ -4,27 +4,45 @@
 name: Publish @openfastchat/ui
 
 on:
-  push:
-    tags: ["v*"]
+  release:
+    types: [published]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to publish, e.g. v0.2.0"
+        required: true
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
+      # Trusted publishing (OIDC) needs npm >= 11.5.1; node 22 ships older.
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      # The git tag is the single source of truth for the version; package.json's
+      # in-repo value is only a dev placeholder.
+      - name: Set version from tag
+        working-directory: frontend
+        run: |
+          tag="${{ github.event.release.tag_name || inputs.tag }}"
+          npm version "${tag#v}" --no-git-tag-version --allow-same-version
+
       # prepack re-syncs compactPrompt.md from the canonical Go source, then
-      # npm packs and publishes the self-contained package.
+      # npm packs and publishes the self-contained package. Auth is via the
+      # OIDC id-token — no NPM_TOKEN secret involved.
       - name: Publish
         working-directory: frontend
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

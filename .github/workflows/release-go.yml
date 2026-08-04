@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: 2026 Bart van de Lint <bart@vandelint.net>
+# SPDX-License-Identifier: AGPL-3.0-only
+
+name: Release Go module
+
+# A Go module has no upload step: pushing the vX.Y.Z tag *is* the release, and
+# the proxy fetches it on first `go get`. This job verifies the tagged commit
+# builds and pre-warms proxy.golang.org so the first consumer request is fast.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to verify, e.g. v0.2.0"
+        required: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Build and vet
+        run: |
+          go build ./...
+          go vet ./...
+
+      # Best-effort: the module is already released by the tag regardless, so a
+      # transient proxy hiccup must not fail the workflow.
+      - name: Warm module proxy
+        env:
+          GOPROXY: proxy.golang.org
+        run: |
+          tag="${{ github.event.release.tag_name || inputs.tag }}"
+          dir="$(mktemp -d)"
+          cd "$dir"
+          go mod init warm
+          go get "github.com/1-Bart-1/openfastchat-core@${tag}" || true

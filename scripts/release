@@ -1,0 +1,177 @@
+#!/bin/bash
+# SPDX-FileCopyrightText: 2026 Bart van de Lint <bart@vandelint.net>
+# SPDX-License-Identifier: AGPL-3.0-only
+
+set -euo pipefail
+
+dry_run=false
+assume_yes=false
+sha=""
+
+print_usage() {
+    echo "Usage:"
+    echo "  ./scripts/release            Cut a GitHub release for HEAD"
+    echo "  ./scripts/release --dry-run  Print version, commit and notes, then exit"
+    echo "  ./scripts/release --yes      Skip the confirmation prompt"
+    echo "  ./scripts/release --sha SHA  Release a specific commit instead of HEAD"
+    echo "  ./scripts/release -h"
+    echo
+    echo "Reads the top versioned section of CHANGELOG.md (backend) and"
+    echo "frontend/CHANGELOG.md (frontend), requires their versions to match, and"
+    echo "creates a published GitHub release at that tag. The release body is the"
+    echo "two changelog sections followed by GitHub's auto-generated list of merged"
+    echo "PRs since the previous release. Publishing the release fires the"
+    echo "publish-ui.yml and release-go.yml workflows. The commit must be pushed."
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help) print_usage; exit 0 ;;
+        -n|--dry-run) dry_run=true; shift ;;
+        -y|--yes) assume_yes=true; shift ;;
+        --sha) sha="${2:?--sha needs an argument}"; shift 2 ;;
+        *) echo "Unknown option: $1" >&2; print_usage >&2; exit 1 ;;
+    esac
+done
+
+if [[ $(basename "$(pwd)") == "scripts" ]]; then
+    cd ..
+fi
+
+for cmd in git gh awk; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        echo "Required command not found: $cmd" >&2
+        exit 1
+    fi
+done
+
+if ! gh auth status >/dev/null 2>&1; then
+    echo "gh is not authenticated. Run 'gh auth login' first." >&2
+    exit 1
+fi
+
+# Prints the latest versioned tag from a changelog, skipping [Unreleased].
+latest_version() {
+    awk '
+        /^## / {
+            line = $0
+            sub(/^## /, "", line)
+            gsub(/[][]/, "", line)
+            split(line, parts, " ")
+            v = parts[1]
+            if (tolower(v) == "unreleased") next
+            if (v ~ /^v?[0-9]/) { print v; exit }
+        }
+    ' "$1"
+}
+
+# Prints the body of the latest versioned section, trimming blank edge lines.
+latest_notes() {
+    awk '
+        /^## / {
+            line = $0; sub(/^## /, "", line); gsub(/[][]/, "", line)
+            split(line, parts, " ")
+            if (tolower(parts[1]) == "unreleased") next
+            seen++
+            if (seen == 1) next
+            if (seen >= 2) exit
+        }
+        seen == 1 { print }
+    ' "$1" | awk '
+        { lines[NR] = $0 }
+        END {
+            start = 1
+            while (start <= NR && lines[start] ~ /^[[:space:]]*$/) start++
+            end = NR
+            while (end >= start && lines[end] ~ /^[[:space:]]*$/) end--
+            for (i = start; i <= end; i++) print lines[i]
+        }
+    '
+}
+
+backend_version=$(latest_version CHANGELOG.md)
+frontend_version=$(latest_version frontend/CHANGELOG.md)
+
+if [[ -z "$backend_version" ]]; then
+    echo "No versioned section found in CHANGELOG.md" >&2
+    exit 1
+fi
+if [[ "$backend_version" != "$frontend_version" ]]; then
+    echo "Version mismatch: CHANGELOG.md top is $backend_version but" \
+         "frontend/CHANGELOG.md top is $frontend_version." >&2
+    echo "The two artifacts share one version — align both top headers." >&2
+    exit 1
+fi
+
+# Normalise to a leading v so the tag is always vX.Y.Z.
+version="$backend_version"
+[[ "$version" == v* ]] || version="v$version"
+
+backend_notes=$(latest_notes CHANGELOG.md)
+frontend_notes=$(latest_notes frontend/CHANGELOG.md)
+
+if [[ -z "$backend_notes" && -z "$frontend_notes" ]]; then
+    echo "No release notes found under the $version sections." >&2
+    exit 1
+fi
+
+if [[ -z "$sha" ]]; then
+    sha=$(git rev-parse HEAD)
+fi
+
+if [[ -n "$(git status --porcelain)" ]]; then
+    echo "Warning: working tree has uncommitted changes." >&2
+fi
+
+repo=$(gh repo view --json nameWithOwner -q .nameWithOwner)
+
+if ! gh api "repos/$repo/commits/$sha" >/dev/null 2>&1; then
+    echo "Commit $sha was not found on $repo. Push it first:" >&2
+    echo "  git push" >&2
+    exit 1
+fi
+
+if gh release view "$version" --repo "$repo" >/dev/null 2>&1; then
+    echo "Release $version already exists on $repo." >&2
+    exit 1
+fi
+
+body=$(printf '## Backend (Go module)\n\n%s\n\n## Frontend (@openfastchat/ui)\n\n%s\n' \
+    "$backend_notes" "$frontend_notes")
+
+echo "Repository:   $repo"
+echo "Version:      $version"
+echo "Commit:       $sha"
+echo
+echo "Release notes:"
+echo "--------------------------------------------------------------------------"
+echo "$body"
+echo "--------------------------------------------------------------------------"
+echo "(GitHub appends the merged-PR list since the previous release below this.)"
+
+if [[ "$dry_run" == true ]]; then
+    echo
+    echo "Dry run: no release created."
+    exit 0
+fi
+
+if [[ "$assume_yes" != true ]]; then
+    echo
+    read -r -p "Create and publish this release? [y/N] " reply
+    if [[ ! "$reply" =~ ^[Yy]$ ]]; then
+        echo "Aborted."
+        exit 1
+    fi
+fi
+
+url=$(gh api "repos/$repo/releases" \
+    -f tag_name="$version" \
+    -f target_commitish="$sha" \
+    -f name="$version" \
+    -f body="$body" \
+    -F generate_release_notes=true \
+    -q .html_url)
+
+echo
+echo "Published: $url"
+echo "publish-ui.yml and release-go.yml will run for $version."
