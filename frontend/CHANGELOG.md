@@ -13,6 +13,13 @@ lockstep.
 
 ## [Unreleased]
 
+## [v0.2.1] - 2026-08-04
+
+### Fixed
+- Match `repository.url` to the exact GitHub org case (`OpenFastChat`) so npm
+  trusted-publishing provenance validation passes. `v0.2.0` failed to publish to
+  npm for this reason; the package's first org release is `0.2.1`.
+
 ## [v0.2.0] - 2026-08-04
 
 ### Changed

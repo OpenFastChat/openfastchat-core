@@ -13,6 +13,12 @@ This module and the `@openfastchat/ui` frontend share one version: a single
 
 ## [Unreleased]
 
+## [v0.2.1] - 2026-08-04
+
+### Changed
+- Version bump only, to keep the Go module and `@openfastchat/ui` in lockstep
+  after the frontend's npm-provenance fix. No backend changes since `v0.2.0`.
+
 ## [v0.2.0] - 2026-08-04
 
 ### Changed
