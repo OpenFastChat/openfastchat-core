@@ -9,14 +9,18 @@ import (
 )
 
 type modelInfo struct {
-	ID    string `json:"id"`
-	Label string `json:"label"`
+	ID      string `json:"id"`
+	Label   string `json:"label"`
+	Default bool   `json:"default,omitempty"`
 }
 
 func ModelsHandler(w http.ResponseWriter, r *http.Request) {
+	defaultModel := coreconfig.DefaultModel()
 	models := make([]modelInfo, 0, len(coreconfig.Models))
 	for id, cfg := range coreconfig.Models {
-		models = append(models, modelInfo{ID: id, Label: cfg.Label})
+		models = append(models, modelInfo{
+			ID: id, Label: cfg.Label, Default: id == defaultModel,
+		})
 	}
 	sort.Slice(models, func(i, j int) bool { return models[i].ID < models[j].ID })
 	w.Header().Set("Content-Type", "application/json")

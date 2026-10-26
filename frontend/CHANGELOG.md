@@ -13,6 +13,13 @@ See [`../COMPATIBILITY.md`](../COMPATIBILITY.md) for which versions work togethe
 
 ## [Unreleased]
 
+## [v0.2.2] - 2026-10-26
+
+### Fixed
+- Pick the server-flagged default model when the user's preferred model is
+  unavailable, instead of the hardcoded, retired `llama-3.3-70b-versatile`.
+  Needs `openfastchat-core` ≥ `v0.2.2`.
+
 ## [v0.2.1] - 2026-08-04
 
 ### Fixed

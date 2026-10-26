@@ -178,9 +178,7 @@ export function ChatShell({
     if (preferred && models.some((m) => m.id === preferred)) {
       setModel(preferred);
     } else {
-      const fallback = models.find(
-        (m) => m.id === "llama-3.3-70b-versatile",
-      );
+      const fallback = models.find((m) => m.default);
       setModel(fallback?.id ?? models[0].id);
     }
   }, [models, model, preferredQuery.data]);
