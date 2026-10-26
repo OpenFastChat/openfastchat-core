@@ -11,6 +11,7 @@ import { captchaHeaders } from "../lib/captcha";
 export interface ModelInfo {
   id: string;
   label: string;
+  default?: boolean;
 }
 
 export function useModels() {

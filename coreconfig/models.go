@@ -5,6 +5,7 @@
 package coreconfig
 
 import (
+	"sort"
 	"strings"
 	"unicode"
 
@@ -20,6 +21,27 @@ type ModelConfig struct {
 
 // Models is populated at startup from every provider's API.
 var Models = map[string]ModelConfig{}
+
+// DefaultModelID is the model used when a request names none or one no
+// provider serves.
+const DefaultModelID = "openai/gpt-oss-120b"
+
+// DefaultModel returns DefaultModelID when a provider serves it, else the
+// lowest discovered model ID, or "" when no models are discovered.
+func DefaultModel() string {
+	if _, ok := Models[DefaultModelID]; ok {
+		return DefaultModelID
+	}
+	ids := make([]string, 0, len(Models))
+	for id := range Models {
+		ids = append(ids, id)
+	}
+	if len(ids) == 0 {
+		return ""
+	}
+	sort.Strings(ids)
+	return ids[0]
+}
 
 var pricingOverrides = map[string][2]float64{}
 

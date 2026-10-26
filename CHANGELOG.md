@@ -13,6 +13,17 @@ See [`COMPATIBILITY.md`](COMPATIBILITY.md) for which versions work together.
 
 ## [Unreleased]
 
+## [v0.2.2] - 2026-10-26
+
+### Fixed
+- Fall back to a model a provider actually serves (`coreconfig.DefaultModel`:
+  `openai/gpt-oss-120b`, else the first discovered model) instead of the
+  hardcoded, retired `llama-3.3-70b-versatile`, which made every node without a
+  valid model fail with a provider 404.
+
+### Added
+- `/api/models` flags the default model with `"default": true`.
+
 ## [v0.2.1] - 2026-08-04
 
 ### Changed

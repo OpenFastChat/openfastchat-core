@@ -118,12 +118,8 @@ func nodePriority(t NodeType) int {
 }
 
 func resolveModel(model string) string {
-	const fallback = "llama-3.3-70b-versatile"
-	if model == "" {
-		return fallback
-	}
 	if _, valid := coreconfig.Models[model]; !valid {
-		return fallback
+		return coreconfig.DefaultModel()
 	}
 	return model
 }
