@@ -30,9 +30,10 @@ func executeCompact(
 	if model == "" || model == CompactDefaultModel {
 		model = n.Config.CompactModel
 	}
+	model = coreconfig.ResolveModel(model)
 	if model == "" {
 		return NodeResult{}, fmt.Errorf(
-			"compact: no model configured",
+			"compact: no model available",
 		)
 	}
 

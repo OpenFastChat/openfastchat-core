@@ -34,7 +34,7 @@ func executeLLM(
 
 	messages := llmMessagesFrom(n.Inputs)
 
-	model := resolveModel(data.Model)
+	model := coreconfig.ResolveModel(data.Model)
 	maxTokens := data.MaxTokens
 	if maxTokens <= 0 {
 		if cfg, ok := coreconfig.Models[model]; ok {

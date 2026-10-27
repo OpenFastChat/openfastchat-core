@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	"github.com/openfastchat/openfastchat-core/compact"
+	"github.com/openfastchat/openfastchat-core/coreconfig"
 	"github.com/openfastchat/openfastchat-core/flowengine"
 	"github.com/openfastchat/openfastchat-core/middleware"
 	"github.com/openfastchat/openfastchat-core/store"
@@ -359,7 +360,9 @@ func (h *FlowsHandler) autoTitleThread(
 	userContent, assistantContent string,
 	emit func(flowengine.StreamEvent),
 ) {
-	title, err := compact.Title(ctx, llm, h.cfg.CompactModel, userContent, assistantContent)
+	title, err := compact.Title(
+		ctx, llm, coreconfig.ResolveModel(h.cfg.CompactModel), userContent, assistantContent,
+	)
 	if err != nil {
 		slog.Error("auto-title thread", "err", err)
 		return

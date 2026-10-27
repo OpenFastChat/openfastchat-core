@@ -7,8 +7,6 @@ package flowengine
 import (
 	"sort"
 	"strings"
-
-	"github.com/openfastchat/openfastchat-core/coreconfig"
 )
 
 // mergeInputs walks live ancestors of targetID transitively
@@ -115,11 +113,4 @@ func nodePriority(t NodeType) int {
 	default:
 		return 6
 	}
-}
-
-func resolveModel(model string) string {
-	if _, valid := coreconfig.Models[model]; !valid {
-		return coreconfig.DefaultModel()
-	}
-	return model
 }

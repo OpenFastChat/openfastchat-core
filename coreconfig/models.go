@@ -26,6 +26,14 @@ var Models = map[string]ModelConfig{}
 // provider serves.
 const DefaultModelID = "openai/gpt-oss-120b"
 
+// ResolveModel returns model when a provider serves it, else DefaultModel().
+func ResolveModel(model string) string {
+	if _, ok := Models[model]; ok {
+		return model
+	}
+	return DefaultModel()
+}
+
 // DefaultModel returns DefaultModelID when a provider serves it, else the
 // lowest discovered model ID, or "" when no models are discovered.
 func DefaultModel() string {
