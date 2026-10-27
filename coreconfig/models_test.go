@@ -24,3 +24,15 @@ func TestDefaultModelFallsBackToDiscoveredModel(t *testing.T) {
 		t.Fatalf("default served: got %q, want %q", got, DefaultModelID)
 	}
 }
+
+func TestResolveModelKeepsServedModelAndFallsBackOtherwise(t *testing.T) {
+	t.Cleanup(func() { Models = map[string]ModelConfig{} })
+	Models = map[string]ModelConfig{"llama3.2": {}, "qwen3": {}}
+
+	if got := ResolveModel("qwen3"); got != "qwen3" {
+		t.Fatalf("served model: got %q, want qwen3", got)
+	}
+	if got := ResolveModel("openai/gpt-oss-20b"); got != "llama3.2" {
+		t.Fatalf("unserved compact default: got %q, want llama3.2", got)
+	}
+}

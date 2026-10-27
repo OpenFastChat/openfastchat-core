@@ -13,6 +13,13 @@ See [`COMPATIBILITY.md`](COMPATIBILITY.md) for which versions work together.
 
 ## [Unreleased]
 
+## [v0.2.3] - 2026-10-27
+
+### Fixed
+- Auto-titles and compact nodes fall back to a served model when
+  `CompactModel` isn't offered by any provider (e.g. an Ollama-only install),
+  via the new `coreconfig.ResolveModel`, which LLM and branch nodes now share.
+
 ## [v0.2.2] - 2026-10-26
 
 ### Fixed

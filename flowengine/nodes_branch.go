@@ -44,7 +44,7 @@ func executeQuestion(
 		)
 	}
 
-	model := resolveModel(data.Model)
+	model := coreconfig.ResolveModel(data.Model)
 	maxTokens := 32
 	if cfg, ok := coreconfig.Models[model]; ok &&
 		cfg.MaxTokens > 0 && cfg.MaxTokens < maxTokens {
